@@ -16,21 +16,21 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'09.06.2013'</value>
+      <value>'19.06.2013'</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>E:\ActionScript\TimeParadox\src</path-element>
+      <path-element>E:\ActionScript\TimeParadox\TimeParadox\src</path-element>
       <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
     <library-path append="true">
-      <path-element>E:\ActionScript\TimeParadox\lib\PureMVC_AS3_2_0_4.swc</path-element>
-      <path-element>E:\ActionScript\TimeParadox\lib\FearlessGraphic.swc</path-element>
-      <path-element>E:\ActionScript\TimeParadox\lib\Maps.swc</path-element>
+      <path-element>E:\ActionScript\TimeParadox\TimeParadox\lib\PureMVC_AS3_2_0_4.swc</path-element>
+      <path-element>E:\ActionScript\TimeParadox\TimeParadox\lib\FearlessGraphic.swc</path-element>
+      <path-element>E:\ActionScript\TimeParadox\TimeParadox\lib\Maps.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>E:\ActionScript\TimeParadox\src\Main.as</path-element>
+    <path-element>E:\ActionScript\TimeParadox\TimeParadox\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>
