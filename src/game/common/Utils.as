@@ -1,5 +1,6 @@
 package game.common 
 {
+	import flash.geom.Point;
 	/**
 	 * ...
 	 * @author messia_s
@@ -40,6 +41,8 @@ package game.common
 		{
 			return Math.sqrt((A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y));
 		}
+		
+		
 		
 	}
 

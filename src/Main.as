@@ -10,7 +10,7 @@ package
 	import flash.display.StageScaleMode;
 	 import flash.display.StageAlign;
  import flash.display.StageScaleMode;
- [SWF(width="1000",height="600",frameRate="60",backgroundColor="#000000")]
+ [SWF(width="800",height="600",frameRate="60",backgroundColor="#000000")]
 	
 	/**
 	 * ...

@@ -50,9 +50,9 @@ package game.model.service
 			GameFacade.getInstance().mainStage.focus = GameFacade.getInstance().mainStage;
 			actionTimer.addEventListener(TimerEvent.TIMER, onActionTimer);
 			createMap();
-			//createHumans();
-			//setStartTargets();
-			//startLevel();
+			createHumans();
+			setStartTargets();
+			startLevel();
 			
 		}
 		

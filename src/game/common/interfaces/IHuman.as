@@ -19,6 +19,7 @@ package game.common.interfaces
 		function getCurrentPoint():Point;
 		function getName():String;
 		function checkNoise(obj:Object):void;
+		
 		/*function getAgressive():Number;
 		function setAgressive(level:Number):void;
 		function getRelationWith(some:IHuman):Number;

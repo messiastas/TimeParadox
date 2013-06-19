@@ -27,10 +27,10 @@ package game.common
 				humansArray.push(h);
 			}
 			
-			for (var i:int = 0; i < 350; i++)
-			{
-				humansArray.push({ "humanName":"human"+String(i), "Health":100, "newX":Math.random()*800, "newY":Math.random()*600, "newAngle":0, "targetType":"type_human", "targetName":humansArray[int(Math.random()*humansArray.length-2)+1]["humanName"], "targetAction": "action_kill", "speed":int(Math.random()*5+4),"weapon":"WPistol"})
-			}
+			//for (var i:int = 0; i < 350; i++)
+			//{
+			//	humansArray.push({ "humanName":"human"+String(i), "Health":100, "newX":Math.random()*800, "newY":Math.random()*600, "newAngle":0, "targetType":"type_human", "targetName":humansArray[int(Math.random()*humansArray.length-2)+1]["humanName"], "targetAction": "action_kill", "speed":int(Math.random()*5+4),"weapon":"WPistol"})
+			//}
 			return humansArray;
 		}
 		

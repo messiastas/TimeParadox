@@ -3,6 +3,7 @@ package game.model.service
 	import flash.geom.Point;
 	import game.common.interfaces.IGameService;
 	import game.common.interfaces.IHuman;
+	import game.common.interfaces.ILevelDesign;
 	import game.common.interfaces.IWeapon;
 	import game.common.interfaces.IWorldObject;
 	import org.puremvc.as3.interfaces.IProxy;
@@ -38,7 +39,11 @@ package game.model.service
 		private var currentHealth:Number;
 		
 		private var stackOfTargets:Array;
-		private var stackOfWaypoints:Array;
+		private var stackOfWaypoints:Array = new Array;
+		
+		
+		
+		
 		public function HumanService(data:Object):void
 		{
 			playerStartData = Utils.recursiveCopy(data);
@@ -74,8 +79,8 @@ package game.model.service
 		{
 			if (wayPoint)//TODO normal if
 			{
-				if (GameFacade.getInstance().iteration % 10 == 0)
-					changeAngle(calculateAngleToPoint(wayPoint));
+				//if (GameFacade.getInstance().iteration % 10 == 0)
+					//changeAngle(calculateAngleToPoint(wayPoint));
 				if (!checkAction())
 				{
 					
@@ -95,6 +100,8 @@ package game.model.service
 				case SharedConst.ACTION_GOTO:
 					if (Utils.calculateDistance(currentTarget.getCurrentPoint(), currentPoint) < currentSpeed)
 						wayPoint = null;
+					else
+						checkWayPoint();
 					break;
 				case SharedConst.ACTION_KILL:
 					var d:Number = Utils.calculateDistance(currentTarget.getCurrentPoint(), currentPoint);
@@ -108,19 +115,46 @@ package game.model.service
 							sendNotification(SharedConst.CMD_NEW_RANDOM_TARGET, { "sender":this } );
 						}
 						return true;
+					} else 
+					{
+						checkWayPoint();
 					}
 					break;
 			}
 			return false;
 		}
 		
+		private function checkWayPoint():void 
+		{
+			if (Utils.calculateDistance(wayPoint, currentPoint) < currentSpeed )
+			{
+				goToNextWayPoint();
+			}
+		}
+		
+		private function goToNextWayPoint():void 
+		{
+			if (stackOfWaypoints.length>0)
+			{
+				
+				wayPoint = stackOfWaypoints[0];
+				changeAngle(calculateAngleToPoint(wayPoint));
+				stackOfWaypoints.shift();
+			} else 
+			{
+				wayPoint = null;
+			}
+		}
 		public function newTarget(obj:IWorldObject,act:String):void
 		{
 			currentTarget = obj;
 			targetAction = act;
 			//trace("Target for ", getName(), ": ", currentTarget.getName(), currentTarget.getCurrentPoint());
 			
-			wayPoint = currentTarget.getCurrentPoint();
+			searchPathTo(getCurrentPoint(),currentTarget.getCurrentPoint(), (GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE) as ILevelDesign).getMapArray(), stackOfWaypoints);
+			
+			goToNextWayPoint()
+			//wayPoint = currentTarget.getCurrentPoint();
 			changeAngle(calculateAngleToPoint(wayPoint));
 			
 		}
@@ -200,6 +234,106 @@ package game.model.service
 		public function getName():String
 		{
 			return humanName;
+		}
+		
+		
+		private  function searchPathTo(startPoint:Point, targetPoint:Point, map:Array, wayPoints:Array):void
+		{
+			var costArray:Array = new Array(map.length);
+			for (var i:int = 0; i < costArray.length; i++)
+			{
+				costArray[i] = new Array((map[0] as Array).length);
+				for (var j:int = 0; j < (map[0] as Array).length; j++)
+				{
+					costArray[i][j] = {"distance":costArray.length,"cost":costArray.length*costArray.length,"comeFrom":new Point(-1,-1),"point":new Point(j,i)}
+				}
+			}
+			trace(costArray.length);
+			var currentIndex:Point = new Point(int(startPoint.x / SharedConst.MAP_STEP), int(startPoint.y / SharedConst.MAP_STEP));
+			var targetIndex:Point = new Point(int(targetPoint.x / SharedConst.MAP_STEP), int(targetPoint.y / SharedConst.MAP_STEP));
+			
+			var isFind:Boolean = false;
+			
+			costArray[currentIndex.y][currentIndex.x]["distance"] = Utils.calculateDistance(currentIndex, targetIndex);
+			costArray[currentIndex.y][currentIndex.x]["cost"] = 0;
+			costArray[currentIndex.y][currentIndex.x]["heuristic"] = costArray[currentIndex.y][currentIndex.x]["distance"] + costArray[currentIndex.y][currentIndex.x]["cost"];
+			costArray[currentIndex.y][currentIndex.x]["comeFrom"] = new Point( -1, -1)
+			costArray[currentIndex.y][currentIndex.x]["index"] = new Point(currentIndex.x, currentIndex.y)
+			
+			var openList:Array = new Array;
+			var closedList:Array = new Array;
+			openList.push(costArray[currentIndex.y][currentIndex.x]);
+			
+			
+			while (!isFind && openList.length>0)
+			{
+				//trace(openList.length);
+				openList.sortOn("heuristic", Array.NUMERIC);
+				var destX:int = openList[0]["point"].x;
+				var destY:int = openList[0]["point"].y;
+				var summ:int = 0;
+				summ += checkExcel(costArray, map, openList, destX, destY+1,targetIndex,openList[0]["index"],2)
+				summ += checkExcel(costArray, map, openList, destX, destY-1,targetIndex,openList[0]["index"],2)
+				summ += checkExcel(costArray, map, openList, destX+1, destY,targetIndex,openList[0]["index"],2)
+				summ += checkExcel(costArray, map, openList, destX-1, destY,targetIndex,openList[0]["index"],2)
+				summ += checkExcel(costArray, map, openList, destX+1, destY+1,targetIndex,openList[0]["index"],3)
+				summ += checkExcel(costArray, map, openList, destX+1, destY-1,targetIndex,openList[0]["index"],3)
+				summ += checkExcel(costArray, map, openList, destX-1, destY+1,targetIndex,openList[0]["index"],3)
+				summ += checkExcel(costArray, map, openList, destX-1, destY-1,targetIndex,openList[0]["index"],3)
+				openList.shift();
+				//trace(humanName, summ);
+				if (summ > 9)
+				{
+					isFind = true;
+					
+				} 
+			}
+			if (!isFind)
+			{
+				
+			 trace("PATH WAS NOT FOUNED BY", humanName);
+			} else 
+			{
+				trace("PATH WAS FOUNED BY", humanName)
+				var currentWayPoint:Object = costArray[targetIndex.y][targetIndex.x];
+				//trace(currentWayPoint["comeFrom"])
+				while (currentWayPoint["comeFrom"].x > -1)
+				{
+					
+					wayPoints.unshift(new Point(currentWayPoint["index"].x*SharedConst.MAP_STEP + SharedConst.MAP_STEP/2,currentWayPoint["index"].y*SharedConst.MAP_STEP+ SharedConst.MAP_STEP/2))
+					currentWayPoint = costArray[currentWayPoint["comeFrom"].y][currentWayPoint["comeFrom"].x]
+				}
+				//trace(humanName, "wayPoints",wayPoints);
+			}
+		}
+		
+		private function checkExcel(costArray:Array,map:Array,openList:Array,destX:int,destY:int,targetIndex:Point,currentIndex:Point,costCoef:int):int
+		{
+			try
+			{
+				var checkedExcel:Object = costArray[destY][destX];//
+				if (map[destY][destX]==0 && checkedExcel["cost"]>openList[0]["cost"]+costCoef) 
+				{
+					checkedExcel["distance"] = Utils.calculateDistance(new Point(destX,destY), targetIndex);
+					checkedExcel["cost"] = openList[0]["cost"] + costCoef;
+					checkedExcel["heuristic"] = checkedExcel["distance"] + checkedExcel["cost"];
+					checkedExcel["comeFrom"] = new Point(currentIndex.x, currentIndex.y)
+					checkedExcel["index"] = new Point(destX, destY)
+					openList.push(checkedExcel);
+					//trace(checkedExcel["index"]);
+					if (checkedExcel["index"].x == targetIndex.x && checkedExcel["index"].y == targetIndex.y)
+						return 10
+					else
+						return 1;
+				} else 
+				{
+					return 0;
+				}
+			} catch (er:Error)
+			{
+				return 0;
+			}
+			return 0;
 		}
 	}
 

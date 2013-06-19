@@ -5,12 +5,14 @@ package game.model.service
 	import org.puremvc.as3.interfaces.IProxy;
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	import game.common.SharedConst;
+	import game.common.interfaces.ILevelDesign;
+	import game.common.GameFacade;
 	
 	/**
 	 * ...
 	 * @author messia_s
 	 */
-	public class MapService extends Proxy implements IProxy 
+	public class MapService extends Proxy implements IProxy,ILevelDesign
 	{
 		
 		private var currentMapGraphic:MovieClip;
@@ -24,6 +26,7 @@ package game.model.service
 			{
 				case 1:
 					currentMapGraphic = new Map1();
+					GameFacade.getInstance().mainStage.addChild(currentMapGraphic);
 					break;
 					
 			}
@@ -49,7 +52,7 @@ package game.model.service
 					
 					if (bMap.getPixel(j * mapStep + mapStep / 2, i * mapStep + mapStep / 2)>0)
 					{
-						trace(i, j);
+						//trace(i, j);
 						horizontalArray[j] = 1
 					} else 
 					{
@@ -61,7 +64,7 @@ package game.model.service
 				i++;
 				j = 0;
 			}
-			trace(realMap);
+			//trace(realMap);
 		}
 		
 		public function getMapArray():Array
