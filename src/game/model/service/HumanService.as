@@ -41,6 +41,8 @@ package game.model.service
 		private var stackOfTargets:Array;
 		private var stackOfWaypoints:Array = new Array;
 		
+		private var needToStop:Boolean = false;
+		
 		
 		
 		
@@ -77,19 +79,22 @@ package game.model.service
 		}
 		public function makeStep():void
 		{
-			if (wayPoint)//TODO normal if
+			if (!needToStop)
 			{
-				//if (GameFacade.getInstance().iteration % 10 == 0)
-					//changeAngle(calculateAngleToPoint(wayPoint));
-				if (!checkAction())
+				if (wayPoint)//TODO normal if
 				{
+					//if (GameFacade.getInstance().iteration % 10 == 0)
+						//changeAngle(calculateAngleToPoint(wayPoint));
+					if (!checkAction())
+					{
+						
+						currentPoint.x += Math.sin(currentAngle / 57.296) * currentSpeed;
+						currentPoint.y -= Math.cos(currentAngle / 57.296) * currentSpeed;
+						sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": currentPoint.x, "newY": currentPoint.y } );
+					}
 					
-					currentPoint.x += Math.sin(currentAngle / 57.296) * currentSpeed;
-					currentPoint.y -= Math.cos(currentAngle / 57.296) * currentSpeed;
-					sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": currentPoint.x, "newY": currentPoint.y } );
+					
 				}
-				
-				
 			}
 		}
 		
@@ -137,25 +142,33 @@ package game.model.service
 			if (stackOfWaypoints.length>0)
 			{
 				
-				wayPoint = stackOfWaypoints[0];
-				changeAngle(calculateAngleToPoint(wayPoint));
-				stackOfWaypoints.shift();
+					wayPoint = stackOfWaypoints[0];
+					changeAngle(calculateAngleToPoint(wayPoint));
+					stackOfWaypoints.shift();
 			} else 
 			{
 				wayPoint = null;
+				if (Utils.calculateDistance(currentTarget.getCurrentPoint(), getCurrentPoint()) > SharedConst.MAP_STEP*2 && !needToStop)
+				{
+					//trace(Utils.calculateDistance(currentTarget.getCurrentPoint(), stackOfWaypoints[stackOfWaypoints.length - 1] as Point))
+					stackOfWaypoints = new Array();
+					//wayPoint = null;
+					searchPathTo(getCurrentPoint(), currentTarget.getCurrentPoint(), (GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE) as ILevelDesign).getMapArray(), stackOfWaypoints);
+					goToNextWayPoint()
+				}
 			}
 		}
 		public function newTarget(obj:IWorldObject,act:String):void
 		{
 			currentTarget = obj;
 			targetAction = act;
-			//trace("Target for ", getName(), ": ", currentTarget.getName(), currentTarget.getCurrentPoint());
-			
+			trace("Target for ", getName(), ": ", currentTarget.getName());
+			stackOfWaypoints = new Array();
 			searchPathTo(getCurrentPoint(),currentTarget.getCurrentPoint(), (GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE) as ILevelDesign).getMapArray(), stackOfWaypoints);
 			
 			goToNextWayPoint()
 			//wayPoint = currentTarget.getCurrentPoint();
-			changeAngle(calculateAngleToPoint(wayPoint));
+			//changeAngle(calculateAngleToPoint(wayPoint));
 			
 		}
 		
@@ -239,6 +252,7 @@ package game.model.service
 		
 		private  function searchPathTo(startPoint:Point, targetPoint:Point, map:Array, wayPoints:Array):void
 		{
+			//needToStop = true;
 			var costArray:Array = new Array(map.length);
 			for (var i:int = 0; i < costArray.length; i++)
 			{
@@ -248,7 +262,6 @@ package game.model.service
 					costArray[i][j] = {"distance":costArray.length,"cost":costArray.length*costArray.length,"comeFrom":new Point(-1,-1),"point":new Point(j,i)}
 				}
 			}
-			trace(costArray.length);
 			var currentIndex:Point = new Point(int(startPoint.x / SharedConst.MAP_STEP), int(startPoint.y / SharedConst.MAP_STEP));
 			var targetIndex:Point = new Point(int(targetPoint.x / SharedConst.MAP_STEP), int(targetPoint.y / SharedConst.MAP_STEP));
 			
@@ -292,10 +305,13 @@ package game.model.service
 			{
 				
 			 trace("PATH WAS NOT FOUNED BY", humanName);
+			 needToStop = true;
 			} else 
 			{
 				trace("PATH WAS FOUNED BY", humanName)
 				var currentWayPoint:Object = costArray[targetIndex.y][targetIndex.x];
+				//trace (wayPoints)
+				//stackOfWaypoints = new Array();
 				//trace(currentWayPoint["comeFrom"])
 				while (currentWayPoint["comeFrom"].x > -1)
 				{
@@ -304,7 +320,9 @@ package game.model.service
 					currentWayPoint = costArray[currentWayPoint["comeFrom"].y][currentWayPoint["comeFrom"].x]
 				}
 				//trace(humanName, "wayPoints",wayPoints);
+				needToStop = false;
 			}
+			
 		}
 		
 		private function checkExcel(costArray:Array,map:Array,openList:Array,destX:int,destY:int,targetIndex:Point,currentIndex:Point,costCoef:int):int
