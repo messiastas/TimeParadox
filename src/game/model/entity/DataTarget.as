@@ -1,5 +1,6 @@
 package game.model.entity 
 {
+	import game.common.interfaces.IWorldObject;
 	/**
 	 * ...
 	 * @author messia_s
@@ -9,12 +10,13 @@ package game.model.entity
 		public var targetType:String = "";
 		public var targetName:String = "";
 		public var targetAction:String = "";
-		public function DataTarget(tName:String,tType:String,tAction:String):void 
+		public var waypoint:IWorldObject;
+		public function DataTarget(tName:String,tType:String,tAction:String,tPoint:IWorldObject = null):void 
 		{
 			targetName = tName;
 			targetType = tType;
 			targetAction = targetAction;
-			
+			waypoint = tPoint;
 		}
 		
 	}

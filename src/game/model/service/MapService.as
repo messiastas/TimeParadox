@@ -46,11 +46,11 @@ package game.model.service
 			trace(currentMapGraphic.width, currentMapGraphic.height);
 			while (i * mapStep < currentMapGraphic.height)
 			{
-				var horizontalArray:Array = new Array();
+				var horizontalArray:Array = [];
 				while (j * mapStep < currentMapGraphic.width)
 				{
 					
-					if (bMap.getPixel(j * mapStep + mapStep / 2, i * mapStep + mapStep / 2)>0)
+					if (bMap.getPixel(j * mapStep + mapStep *0.5, i * mapStep + mapStep *0.5)>0)
 					{
 						//trace(i, j);
 						horizontalArray[j] = 1

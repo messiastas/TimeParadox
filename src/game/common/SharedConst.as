@@ -22,6 +22,7 @@ package game.common
 		
 		
 		public static const TYPE_HUMAN:String = "type_human";
+		public static const TYPE_WAYPOINT:String = "type_waypoint";
 		
 		public static const NEW_ITER:String = "new_iter";
 		

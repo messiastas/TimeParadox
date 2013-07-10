@@ -9,9 +9,9 @@ package game.model.entity
 		
 		public function WPistol() :void
 		{
-			power = 100;
+			power = 60;
 			distance = 50;
-			noise = 100;
+			noise = 200;
 			maxBullets = 9;
 			currentBullets = 9;
 			reloadTime = 30;

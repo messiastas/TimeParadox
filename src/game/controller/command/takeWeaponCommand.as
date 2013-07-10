@@ -28,6 +28,9 @@ package game.controller.command
 				case "WPistol":
 					weapon = new WPistol();
 					break;
+				default:
+					weapon = new WFeasts();
+					break;
 			}
 			(notification.getBody()["receiver"] as IHuman).setWeapon(weapon);
 			

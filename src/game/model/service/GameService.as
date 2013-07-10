@@ -25,6 +25,7 @@ package game.model.service
 	import game.common.SoundPlayer;
 	import flash.media.SoundMixer;
 	import flash.utils.ByteArray;
+	import flash.system.System;
 	
 	
 	public class GameService extends Proxy implements IProxy,IGameService
@@ -67,7 +68,7 @@ package game.model.service
 		
 		private function createMap():void 
 		{
-			var mapData:Object = new Object();
+			var mapData:Object = {};
 			mapData["level"] = SharedConst.CURRENT_LEVEL;
 			sendNotification(SharedConst.CMD_CREATE_MAP, mapData);
 		}
@@ -107,6 +108,18 @@ package game.model.service
 		private function startLevel():void 
 		{
 			actionTimer.start();
+			GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPush);
+		}
+		
+		private function onKeyPush(e:KeyboardEvent):void 
+		{
+			if (actionTimer.running)
+			{
+				trace(System.privateMemory, System.totalMemory, System.processCPUUsage);
+				actionTimer.stop();
+			}
+			else 
+				actionTimer.start();
 		}
 		
 		private function onActionTimer(e:TimerEvent):void 
