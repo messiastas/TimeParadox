@@ -24,11 +24,15 @@ package game.common
 		public static const TYPE_HUMAN:String = "type_human";
 		public static const TYPE_WAYPOINT:String = "type_waypoint";
 		
+		public static const FRACTION_GUARD:String = "fraction_guard";
+		public static const FRACTION_CIVIL:String = "fraction_civil";
+		public static const FRACTION_REBEL:String = "fraction_rebel";
+		
 		public static const NEW_ITER:String = "new_iter";
 		
 		public static const CURRENT_LEVEL:int = 1;
 		public static const ACTION_TIME:int = 30;
-		public static const MAP_STEP:int = 10;
+		public static const MAP_STEP:int = 20;
 		
 		public static const isSound:Boolean = true;
 		

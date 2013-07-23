@@ -9,7 +9,7 @@ package game.common
 	{
 		private static var instance:SharedLevels;
 		private var humansInLevel1:Array = [ { "humanName":"Mark", "Health":100, "newX":50, "newY":50, "newAngle":0, "targetType":"type_human", "targetName":"Jack", "targetAction": "action_goto","speed":2},
-		{"humanName":"Jack", "Health":100, "newX":250, "newY":250, "newAngle":90, "targetType":"type_human", "targetName":"Tony", "targetAction": "action_kill","speed":3,"weapon":"WPistol" },
+		{"humanName":"Jack", "Health":100, "newX":450, "newY":400, "newAngle":90, "targetType":"type_human", "targetName":"Tony", "targetAction": "action_kill","speed":3,"weapon":"WPistol" },
 		{ "humanName":"Tony", "Health":100, "newX":600, "newY":500, "newAngle":0, "targetType":"type_human", "targetName":"Mark", "targetAction": "action_goto","speed":3 },
 		{ "humanName":"Rita", "Health":100, "newX":50, "newY":400, "newAngle":0, "targetType":"type_human", "targetName":"Jack", "targetAction": "action_kill","speed":3,"weapon":"WKnife"}]
 		

@@ -30,6 +30,7 @@ package game.model.service
 		private var currentPoint:Point;
 		private var currentAngle:Number = 0;
 		private var currentSpeed:Number = 5;
+		private var currentFraction:String = "";
 		private var wayPoint:Point;
 		private var currentType:String = SharedConst.TYPE_HUMAN;
 		private var lastTargetPoint:Point = new Point;
@@ -217,7 +218,7 @@ package game.model.service
 						break;
 					case SharedConst.TYPE_WAYPOINT:
 						newTarget(targ.waypoint as IWorldObject, targ.targetAction);
-						trace(targ.waypoint.getCurrentPoint())
+						trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
 						break;
 				}
 				
@@ -249,7 +250,7 @@ package game.model.service
 				if (getWeapon().getName() == "Feasts")
 				{
 					trace(humanName, "has listen the", obj["point"], "shot and running scared to ",currentPoint.x + (currentPoint.x - obj["point"].x), currentPoint.y + (currentPoint.y - obj["point"].y))
-					var emptyTarget:IWorldObject = new EmptyWorldObject("waypoint", new Point(currentPoint.x + (currentPoint.x - obj["point"].x), currentPoint.y + (currentPoint.y - obj["point"].y)));
+					var emptyTarget:IWorldObject = new EmptyWorldObject("waypoint", new Point(currentPoint.x + 2*(currentPoint.x - obj["point"].x), currentPoint.y + 2*(currentPoint.y - obj["point"].y)));
 					var targ:DataTarget = new DataTarget("waypoint", SharedConst.TYPE_WAYPOINT, SharedConst.ACTION_GOTO, emptyTarget);
 					if (poolOfTargets.length > 0)
 					{
@@ -371,9 +372,10 @@ package game.model.service
 			 needToStop = true;
 			} else 
 			{
-				//trace("PATH WAS FOUNED BY", humanName)
+				
 				var currentWayPoint:Object = costArray[targetIndex.y][targetIndex.x];
-				//trace (wayPoints)
+				
+				
 				//stackOfWaypoints = new Array();
 				//trace(currentWayPoint["comeFrom"])
 				while (currentWayPoint["comeFrom"].x > -1)
@@ -383,6 +385,11 @@ package game.model.service
 					currentWayPoint = costArray[currentWayPoint["comeFrom"].y][currentWayPoint["comeFrom"].x]
 				}
 				//trace(humanName, "wayPoints",wayPoints);
+				if (getName() == "Tony")
+				{
+					trace("PATH WAS FOUNED BY", humanName)
+					trace (wayPoints)
+				}
 				needToStop = false;
 			}
 			
@@ -415,6 +422,11 @@ package game.model.service
 				return 0;
 			}
 			return 0;
+		}
+		
+		public function getFraction():String 
+		{
+			return currentFraction;
 		}
 	}
 

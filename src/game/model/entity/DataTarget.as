@@ -15,7 +15,7 @@ package game.model.entity
 		{
 			targetName = tName;
 			targetType = tType;
-			targetAction = targetAction;
+			targetAction = tAction;
 			waypoint = tPoint;
 		}
 		

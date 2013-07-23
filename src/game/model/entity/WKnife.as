@@ -9,9 +9,9 @@ package game.model.entity
 		
 		public function WKnife() 
 		{
-			power = 30;
+			power = 15;
 			distance = 0;
-			noise = 0;
+			noise = 50;
 			reloadTime = 5;
 			
 		}
