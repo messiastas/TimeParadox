@@ -77,10 +77,12 @@ package game.model.service
 		{
 			for each(var h:Object in humans)
 			{
-				if (h["targetType"]==SharedConst.TYPE_HUMAN)
-				{
-					getHuman(h["humanName"]).newTarget(getHuman(h["targetName"]) as IWorldObject,h["targetAction"])
-				}
+				//if (h["targetType"]==SharedConst.TYPE_HUMAN)
+				//{
+					//getHuman(h["humanName"]).newTarget(getHuman(h["targetName"]) as IWorldObject,h["targetAction"])
+					trace("GameService ", h["humanName"]);
+					getHuman(h["humanName"]).getNextTargetFromPool();
+				//}
 			}
 		}
 		

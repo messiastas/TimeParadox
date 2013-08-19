@@ -1,6 +1,6 @@
 package game.controller.command 
 {
-	import game.model.entity.*;
+	import game.model.entity.weapons.*;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.interfaces.INotification;

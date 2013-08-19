@@ -1,12 +1,14 @@
 package game.view.components 
 {
 	import flash.events.EventDispatcher;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.events.EventDispatcher;
 	import game.common.GameFacade
+	import game.common.interfaces.IHuman;
 	import game.common.SharedConst;
 	
 	/**
@@ -18,6 +20,7 @@ package game.view.components
 		private var human:Sprite = new Sprite;
 		private var body:MovieClip;
 		private var humanName:String = "";
+		private var infoPanel:InfoPanel = new InfoPanel;
 		
 		
 		public function HumanView(hName:String) 
@@ -32,12 +35,30 @@ package game.view.components
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
 			body = new RealPlayer();
 			human.addChild(body);
+			human.addEventListener(MouseEvent.MOUSE_OVER, onOverHuman);
+			infoPanel.nameText.text = humanName;
+		}
+		
+		private function onOverHuman(e:MouseEvent):void 
+		{
+			human.removeEventListener(MouseEvent.MOUSE_OVER, onOverHuman);
+			human.addEventListener(MouseEvent.MOUSE_OUT, onOutHuman);
+			//var currentHuman:IHuman = GameFacade.getInstance().retrieveProxy(humanName) as IHuman;
+			human.addChild(infoPanel);
+			//trace(currentHuman.getName(),currentHuman.getFraction(), currentHuman.getHealth(), currentHuman.getWeapon())
+		}
+		
+		private function onOutHuman(e:MouseEvent):void 
+		{
+			human.removeChild(infoPanel);
+			human.addEventListener(MouseEvent.MOUSE_OVER, onOverHuman);
+			human.removeEventListener(MouseEvent.MOUSE_OUT, onOutHuman);
 		}
 		
 		public function setPosition(newX:Number, newY:Number):void 
 		{
-			body.x = newX;
-			body.y = newY;
+			human.x = newX;
+			human.y = newY;
 		}
 		
 		public function setAngle( angle:Number):void 

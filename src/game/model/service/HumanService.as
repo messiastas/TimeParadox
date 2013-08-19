@@ -12,7 +12,7 @@ package game.model.service
 	import game.common.SharedConst;
 	import game.common.GameFacade;
 	import game.model.entity.*;
-	import game.model.entity.WPistol;
+	import game.model.entity.weapons.*;
 	import flash.utils.getDefinitionByName;
 	import flash.system.ApplicationDomain;
 	import game.model.entity.DataTarget;
@@ -35,7 +35,7 @@ package game.model.service
 		private var currentType:String = SharedConst.TYPE_HUMAN;
 		private var lastTargetPoint:Point = new Point;
 		
-		private var poolOfTargets:Vector.<DataTarget> = new Vector.<DataTarget>;
+		private var poolOfTargets:Array = new Array;
 		
 		private var currentWeapon:IWeapon;
 		private var currentHealth:Number;
@@ -67,11 +67,18 @@ package game.model.service
 			sendNotification(SharedConst.CMD_TAKE_WEAPON, { "receiver":this, "weapon":playerStartData["weapon"] } );
 			if (playerStartData["poolTargets"])
 			{
-				poolOfTargets = playerStartData["poolTargets"];
+				for each(var dt:Object in playerStartData["poolTargets"])
+				{
+					//Utils.recursiveTrace(dt, humanName + " dt");
+					poolOfTargets.push(new DataTarget(dt));
+				}
+				//trace(poolOfTargets[0].targetName, humanName + " poolOfTargets");
+				//poolOfTargets = playerStartData["poolTargets"];
 			}
 			
 			sendNotification(SharedConst.ACTION_MOVE_HUMAN + humanName, { "newX": playerStartData["newX"], "newY": playerStartData["newY"] } );
-			getNextTargetFromPool();
+			//getNextTargetFromPool();
+			//newTarget((GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getHuman(poolOfTargets[0].targetName) as IWorldObject, poolOfTargets[0].targetAction);
 		}
 		
 		public function changeAngle(angle:Number):void
@@ -191,7 +198,7 @@ package game.model.service
 			{
 			currentTarget = obj;
 			targetAction = act;
-			trace("Target for ", getName(), ": ", currentTarget.getName());
+			//trace("Target for ", getName(), ": ", currentTarget.getName());
 			stackOfWaypoints.length = 0;
 			searchPathTo(getCurrentPoint(),currentTarget.getCurrentPoint(), (GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE) as ILevelDesign).getMapArray(), stackOfWaypoints);
 			
@@ -204,21 +211,22 @@ package game.model.service
 		
 		public function getNextTargetFromPool():void
 		{
-			trace(humanName, "next target ", poolOfTargets);
+			//trace(humanName, "next target ", poolOfTargets);
 			if (poolOfTargets.length > 0)
 			{
 				//if(currentTarget !=null)
 				//	poolOfTargets.shift();
 					
-				var targ:DataTarget = poolOfTargets[0];
+				var targ:DataTarget = poolOfTargets[0] as DataTarget;
 				var gs:IGameService = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService)
+				//trace(targ.targetType);
 				switch (targ.targetType) {
 					case SharedConst.TYPE_HUMAN:
-						newTarget(gs.getHuman(targ.targetName) as IWorldObject, targ.targetAction);
+						newTarget(GameFacade.getInstance().retrieveProxy(targ.targetName) as IWorldObject, targ.targetAction);
 						break;
 					case SharedConst.TYPE_WAYPOINT:
 						newTarget(targ.waypoint as IWorldObject, targ.targetAction);
-						trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
+						//trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
 						break;
 				}
 				
@@ -251,7 +259,7 @@ package game.model.service
 				{
 					trace(humanName, "has listen the", obj["point"], "shot and running scared to ",currentPoint.x + (currentPoint.x - obj["point"].x), currentPoint.y + (currentPoint.y - obj["point"].y))
 					var emptyTarget:IWorldObject = new EmptyWorldObject("waypoint", new Point(currentPoint.x + 2*(currentPoint.x - obj["point"].x), currentPoint.y + 2*(currentPoint.y - obj["point"].y)));
-					var targ:DataTarget = new DataTarget("waypoint", SharedConst.TYPE_WAYPOINT, SharedConst.ACTION_GOTO, emptyTarget);
+					var targ:DataTarget = new DataTarget({targetName:"waypoint", targetType:SharedConst.TYPE_WAYPOINT, targetAction:SharedConst.ACTION_GOTO}, emptyTarget);
 					if (poolOfTargets.length > 0)
 					{
 						poolOfTargets.unshift(targ);
@@ -385,11 +393,11 @@ package game.model.service
 					currentWayPoint = costArray[currentWayPoint["comeFrom"].y][currentWayPoint["comeFrom"].x]
 				}
 				//trace(humanName, "wayPoints",wayPoints);
-				if (getName() == "Tony")
-				{
-					trace("PATH WAS FOUNED BY", humanName)
-					trace (wayPoints)
-				}
+				//if (getName() == "Tony")
+				//{
+					//trace("PATH WAS FOUNED BY", humanName)
+					//trace (wayPoints)
+				//}
 				needToStop = false;
 			}
 			

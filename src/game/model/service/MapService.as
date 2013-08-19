@@ -43,7 +43,7 @@ package game.model.service
 			bMap.draw(currentMapGraphic);
 			
 			
-			trace(currentMapGraphic.width, currentMapGraphic.height);
+			//trace(currentMapGraphic.width, currentMapGraphic.height);
 			while (i * mapStep < currentMapGraphic.height)
 			{
 				var horizontalArray:Array = [];

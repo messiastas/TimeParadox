@@ -20,6 +20,7 @@ package game.common.interfaces
 		function getName():String;
 		function checkNoise(obj:Object):void;
 		function getFraction():String;
+		function getNextTargetFromPool():void;
 		
 		/*function getAgressive():Number;
 		function setAgressive(level:Number):void;

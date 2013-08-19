@@ -10,12 +10,12 @@ package game.model.entity
 		public var targetType:String = "";
 		public var targetName:String = "";
 		public var targetAction:String = "";
-		public var waypoint:IWorldObject;
-		public function DataTarget(tName:String,tType:String,tAction:String,tPoint:IWorldObject = null):void 
+		public var waypoint:IWorldObject = null;
+		public function DataTarget(targetObject:Object,tPoint:IWorldObject = null):void 
 		{
-			targetName = tName;
-			targetType = tType;
-			targetAction = tAction;
+			targetName = targetObject.targetName;
+			targetType = targetObject.targetType;
+			targetAction = targetObject.targetAction;
 			waypoint = tPoint;
 		}
 		
