@@ -56,7 +56,7 @@ package game.view.mediators
 						interests.splice(interests.indexOf(SharedConst.NOISE_SHOT), 1);
 						trace("*********************** removing interests for ", humanName);
 					}
-					human.setState(note.getBody()["newState"])
+					human.setState(note.getBody())
 					
 					break;
 				case SharedConst.NOISE_SHOT:

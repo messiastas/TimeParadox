@@ -9,7 +9,7 @@ package game.model.entity.weapons
 		
 		public function WKnife() 
 		{
-			power = 15;
+			power = 45;
 			distance = 0;
 			noise = 50;
 			reloadTime = 5;

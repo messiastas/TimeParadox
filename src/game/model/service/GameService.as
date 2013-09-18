@@ -41,13 +41,15 @@ package game.model.service
 		
 		private var humans:Array;
 		
-		public function GameService() 
+		public function GameService(pname:String,data:Object = null ):void 
 		{
-			proxyName = SharedConst.GAME_SERVICE;
+			proxyName = pname;//SharedConst.GAME_SERVICE;
+			GameFacade.getInstance().registerProxy(this);
 			init();
 		}
 		
 		public function init():void {
+			//proxyName = SharedConst.GAME_SERVICE;
 			GameFacade.getInstance().mainStage.focus = GameFacade.getInstance().mainStage;
 			actionTimer.addEventListener(TimerEvent.TIMER, onActionTimer);
 			createMap();
@@ -133,6 +135,47 @@ package game.model.service
 			{
 					getHuman(h["humanName"]).makeStep();
 			}
+		}
+		
+		public function getNearestProtector(data:Object):IHuman 
+		{
+			//trace("getNearestProtector action");
+			var targetFraction:int = data.fraction;
+			var protectorFraction:int
+			for each (var armed:int in SharedConst.FRACTIONS_ARMED)
+			{
+				if (Utils.getFractionRelations(targetFraction, armed) > SharedConst.FRACTION_AGRESSION_LIMIT)
+				{
+					protectorFraction = armed;
+					break;
+				}
+			}
+			var currentDistance:int = 0;
+			var protector:IHuman = null;
+			for each (var h:Object in humans)
+			{
+				var currentHuman:IHuman = getHuman(h["humanName"]);
+				//var currentHuman:IHuman = humans[i] as IHuman;
+				
+				if (currentHuman.getName() != data.name && currentHuman.getFraction()==protectorFraction)
+				{
+					var newDistance:Number = Utils.calculateDistance(data.point, currentHuman.getCurrentPoint())
+					if (protector == null || (newDistance < currentDistance))
+					{
+						protector = currentHuman;
+						currentDistance = newDistance;
+					}
+					
+					break;
+				}
+			}
+			//trace("getNearestProtector result: ", protector);
+			return protector;
+			/*if (protector != null)
+			{
+				
+				getHuman(data.name).runToProtector(getHuman(currentHuman.getName()));
+			}*/
 		}
 		
 		

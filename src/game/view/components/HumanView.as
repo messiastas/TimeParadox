@@ -33,7 +33,7 @@ package game.view.components
 			
 			GameFacade.getInstance().mainStage.addChild(human);
 			//var body:Rectangle = new Rectangle(0, 0, 20, 20);
-			body = new RealPlayer();
+			body = new HumanLive();
 			human.addChild(body);
 			human.addEventListener(MouseEvent.MOUSE_OVER, onOverHuman);
 			infoPanel.nameText.text = humanName;
@@ -66,8 +66,10 @@ package game.view.components
 			body.rotation = angle;
 		}
 		
-		public function setState(state:String):void 
+		public function setState(data:Object):void 
 		{
+			infoPanel.healthText.text = data.health;
+			var state:String = data.newState
 			switch (state)
 			{
 				case "die":
@@ -76,7 +78,7 @@ package game.view.components
 					var dangle:Number = body.rotation;
 					human.removeChild(body);
 					
-					body = new EmotionalPlayer();
+					body = new HumanDead();
 					human.addChild(body);
 					body.x = dx;
 					body.y = dy;
@@ -84,6 +86,7 @@ package game.view.components
 					GameFacade.getInstance().mainStage.addChildAt(human,0);
 					break;
 			}
+			body.gotoAndStop(data.fraction+1)
 		}
 		
 	}

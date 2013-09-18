@@ -13,6 +13,8 @@
     <minimizable>true</minimizable>
     <maximizable>true</maximizable>
     <resizable>true</resizable>
+    <aspectRatio>landscape</aspectRatio>
+    <renderMode>gpu</renderMode>
   </initialWindow>
   <!-- 
 	More options:

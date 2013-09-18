@@ -5,7 +5,7 @@
     <movie outputType="Application" />
     <movie input="" />
     <movie path="bin\TimeParadox.swf" />
-    <movie fps="30" />
+    <movie fps="40" />
     <movie width="800" />
     <movie height="600" />
     <movie version="3" />
@@ -51,8 +51,8 @@
   <!-- SWC Libraries -->
   <libraryPaths>
     <element path="lib\PureMVC_AS3_2_0_4.swc" />
-    <element path="lib\FearlessGraphic.swc" />
     <element path="lib\Maps.swc" />
+    <element path="lib\players.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

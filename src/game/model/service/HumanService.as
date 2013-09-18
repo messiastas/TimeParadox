@@ -25,12 +25,12 @@ package game.model.service
 	{
 		private var humanName:String = "John Smith";
 		private var playerStartData:Object;
-		private var currentTarget:IWorldObject;
+		private var currentTarget:IWorldObject = null;
 		private var targetAction:String = "";
 		private var currentPoint:Point;
 		private var currentAngle:Number = 0;
 		private var currentSpeed:Number = 5;
-		private var currentFraction:String = "";
+		private var currentFraction:int = 0;
 		private var wayPoint:Point;
 		private var currentType:String = SharedConst.TYPE_HUMAN;
 		private var lastTargetPoint:Point = new Point;
@@ -44,6 +44,8 @@ package game.model.service
 		private var stackOfWaypoints:Array = new Array;
 		
 		private var needToStop:Boolean = false;
+		
+		private var cyclingTarget:Boolean = false;
 		
 		
 		
@@ -62,8 +64,9 @@ package game.model.service
 			proxyName = humanName;
 			currentPoint = new Point(playerStartData["newX"], playerStartData["newY"])
 			changeAngle(playerStartData["newAngle"]);
-			currentSpeed = playerStartData["speed"];
-			currentHealth = playerStartData["Health"];
+			currentSpeed = playerStartData["speed"];			
+			currentFraction = playerStartData["fraction"];
+			setHealth(playerStartData["Health"]);
 			sendNotification(SharedConst.CMD_TAKE_WEAPON, { "receiver":this, "weapon":playerStartData["weapon"] } );
 			if (playerStartData["poolTargets"])
 			{
@@ -84,6 +87,7 @@ package game.model.service
 		public function changeAngle(angle:Number):void
 		{
 			currentAngle = angle;
+			
 			sendNotification(SharedConst.ACTION_CHANGE_ANGLE + humanName, {"newAngle":currentAngle});
 		}
 		public function makeStep():void
@@ -118,11 +122,9 @@ package game.model.service
 				case SharedConst.ACTION_GOTO:
 					if (Utils.calculateDistance(currentTarget.getCurrentPoint(), currentPoint) < SharedConst.MAP_STEP*2)
 					{
+						removeTargetFromPool();
 						trace(humanName,"arrived")
-						wayPoint = null;
-						currentTarget = null;
-						poolOfTargets.shift();
-						getNextTargetFromPool();
+						
 						return true;
 					}
 					else
@@ -132,14 +134,17 @@ package game.model.service
 					var d:Number = Utils.calculateDistance(currentTarget.getCurrentPoint(), currentPoint);
 					if ( (d <= currentWeapon.getDistance() || d<SharedConst.MAP_STEP*2) )
 					{
-						if((currentTarget as IHuman).getHealth()>0)
-							currentWeapon.shot(this, currentTarget as IHuman);
-						else
+						
+						if ((currentTarget as IHuman).getHealth() > 0)
 						{
-							wayPoint = null;
-							currentTarget = null;
-							poolOfTargets.shift();
-							getNextTargetFromPool();
+							
+							changeAngle(calculateAngleToPoint(currentTarget.getCurrentPoint()));
+							//trace(humanName, calculateAngleToPoint(currentTarget.getCurrentPoint()));
+							currentWeapon.shot(this, currentTarget as IHuman);
+						} else
+						{
+							removeTargetFromPool();
+							
 							//sendNotification(SharedConst.CMD_NEW_RANDOM_TARGET, { "sender":this } );
 						}
 						return true;
@@ -150,6 +155,24 @@ package game.model.service
 					break;
 			}
 			return false;
+		}
+		
+		private function removeTargetFromPool():void 
+		{
+			if (!cyclingTarget)
+			{
+				wayPoint = null;
+				currentTarget = null;
+				poolOfTargets.shift();
+				getNextTargetFromPool();
+			} else 
+			{
+				poolOfTargets.push(poolOfTargets[0]);
+				wayPoint = null;
+				currentTarget = null;
+				poolOfTargets.shift();
+				getNextTargetFromPool();
+			}
 		}
 		
 		private function checkWayPoint():void 
@@ -218,13 +241,20 @@ package game.model.service
 				//	poolOfTargets.shift();
 					
 				var targ:DataTarget = poolOfTargets[0] as DataTarget;
-				var gs:IGameService = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService)
-				//trace(targ.targetType);
+				trace(targ);
+				//var gs:IGameService = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService)
+				//trace("GAMESERVICE:", gs);
+				//trace("MAPSERVICE:",GameFacade.getInstance().retrieveProxy(SharedConst.MAP_SERVICE));
 				switch (targ.targetType) {
 					case SharedConst.TYPE_HUMAN:
 						newTarget(GameFacade.getInstance().retrieveProxy(targ.targetName) as IWorldObject, targ.targetAction);
 						break;
 					case SharedConst.TYPE_WAYPOINT:
+						trace("TYPE_WAYPOINT", targ.waypoint)
+						if (targ.isCycling)
+							cyclingTarget = true;
+						else 
+							cyclingTarget = false;
 						newTarget(targ.waypoint as IWorldObject, targ.targetAction);
 						//trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
 						break;
@@ -247,6 +277,7 @@ package game.model.service
 		{
 			setHealth(getHealth() - weapon.getDamage());
 			
+			
 		}
 		
 		public function checkNoise(obj:Object):void 
@@ -255,10 +286,12 @@ package game.model.service
 			{
 				//trace(humanName, "has listen the", obj["point"], "shot");
 				//TO DO normal if for weapon
-				if (getWeapon().getName() == "Feasts")
+				//if (getWeapon().getName() == "Feasts")
+				trace(humanName, "has listen the", obj["point"])
+				if (SharedConst.FRACTIONS_PACIFIC.indexOf(getFraction())>-1)
 				{
-					trace(humanName, "has listen the", obj["point"], "shot and running scared to ",currentPoint.x + (currentPoint.x - obj["point"].x), currentPoint.y + (currentPoint.y - obj["point"].y))
-					var emptyTarget:IWorldObject = new EmptyWorldObject("waypoint", new Point(currentPoint.x + 2*(currentPoint.x - obj["point"].x), currentPoint.y + 2*(currentPoint.y - obj["point"].y)));
+					trace(humanName, "has listen the", obj["point"])//;, "shot and running scared to ",currentPoint.x + (currentPoint.x - obj["point"].x), currentPoint.y + (currentPoint.y - obj["point"].y))
+					/*var emptyTarget:IWorldObject = new EmptyWorldObject("waypoint", new Point(currentPoint.x + 2*(currentPoint.x - obj["point"].x), currentPoint.y + 2*(currentPoint.y - obj["point"].y)));
 					var targ:DataTarget = new DataTarget({targetName:"waypoint", targetType:SharedConst.TYPE_WAYPOINT, targetAction:SharedConst.ACTION_GOTO}, emptyTarget);
 					if (poolOfTargets.length > 0)
 					{
@@ -268,9 +301,46 @@ package game.model.service
 						poolOfTargets[0] = targ;
 					}
 					
-					getNextTargetFromPool();
+					getNextTargetFromPool();*/
+					var protector:IHuman = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getNearestProtector( { name:getName(), fraction:getFraction(), point:getCurrentPoint() } );
+					
+					if (currentTarget.getName() != protector.getName())
+					{
+						trace(getName(), "must run to", protector.getName());
+						var targ:DataTarget = new DataTarget({targetName:protector.getName(), targetType:SharedConst.TYPE_HUMAN, targetAction:SharedConst.ACTION_GOTO});
+						if (poolOfTargets.length > 0)
+						{
+							poolOfTargets.unshift(targ);
+						} else 
+						{
+							poolOfTargets[0] = targ;
+						}
+						getNextTargetFromPool();
+					}
+				} else if (SharedConst.FRACTIONS_ARMED.indexOf(getFraction())>-1)
+				{
+					trace(getName(), "is ready to fight with",obj["shooter"])
+					var shooter:IHuman = GameFacade.getInstance().retrieveProxy(obj["shooter"]) as IHuman;
+					if (Utils.getFractionRelations(getFraction(), shooter.getFraction()) < SharedConst.FRACTION_AGRESSION_LIMIT && (currentTarget==null || (currentTarget.getName() != shooter.getName() )) &&  getName() != shooter.getName())
+					{
+						trace("For ", getName(), "new target is ", shooter.getName());
+						targ = new DataTarget({targetName:shooter.getName(), targetType:SharedConst.TYPE_HUMAN, targetAction:SharedConst.ACTION_KILL});
+						if (poolOfTargets.length > 0)
+						{
+							poolOfTargets.unshift(targ);
+						} else 
+						{
+							poolOfTargets[0] = targ;
+						}
+						getNextTargetFromPool();
+					}
 				}
 			}
+		}
+		
+		public function runToProtector(target:IHuman):void 
+		{
+			trace(getName(), "must run to", target.getName);
 		}
 		
 		public function getWeapon():IWeapon
@@ -289,14 +359,16 @@ package game.model.service
 		{
 			currentHealth = level;
 			//trace(getName() + "'s health: ", getHealth());
+			var state:Object = {health:currentHealth,newState:"",fraction:getFraction()}
 			if (currentHealth <= 0)
 			{
 				trace(humanName, "died");
 				currentTarget = null;
 				wayPoint = null;
 				needToStop = true;
-				sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, { "newState":"die"} );
+				state.newState = "die";
 			}
+			sendNotification(SharedConst.ACTION_CHANGE_STATE + humanName, state );
 		}
 		
 		public function getCurrentPoint():Point
@@ -432,7 +504,7 @@ package game.model.service
 			return 0;
 		}
 		
-		public function getFraction():String 
+		public function getFraction():int 
 		{
 			return currentFraction;
 		}

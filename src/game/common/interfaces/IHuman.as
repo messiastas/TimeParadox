@@ -19,8 +19,9 @@ package game.common.interfaces
 		function getCurrentPoint():Point;
 		function getName():String;
 		function checkNoise(obj:Object):void;
-		function getFraction():String;
+		function getFraction():int;
 		function getNextTargetFromPool():void;
+		function runToProtector(target:IHuman):void;
 		
 		/*function getAgressive():Number;
 		function setAgressive(level:Number):void;

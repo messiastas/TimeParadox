@@ -19,9 +19,9 @@ package game.model.service
 		private var mapStep:int;
 		private var realMap:Array = new Array();
 		
-		public function MapService(data:Object):void 
+		public function MapService(pname:String,data:Object):void 
 		{
-			proxyName = SharedConst.MAP_SERVICE;
+			proxyName = pname;// SharedConst.MAP_SERVICE;
 			switch(data["level"])
 			{
 				case 1:

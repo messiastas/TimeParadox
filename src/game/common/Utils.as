@@ -42,6 +42,11 @@ package game.common
 			return Math.sqrt((A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y));
 		}
 		
+		public static function getFractionRelations(fractionA:int, fractionB:int):int 
+		{
+			return SharedConst.FRACTIONS_RELATIONS[fractionA][fractionB];
+		}
+		
 		
 		
 	}

@@ -5,6 +5,7 @@ package game.controller.command
 	import org.puremvc.as3.interfaces.ICommand;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	import org.puremvc.as3.interfaces.INotification;
+	import game.common.GameFacade;
 	
 	
 	/**
@@ -18,8 +19,8 @@ package game.controller.command
 		override public function execute(notification:INotification):void
 		{
 			
-			facade.registerMediator(new HumanMediator(notification.getBody()["humanName"]));
-			facade.registerProxy(new HumanService(notification.getBody()));
+			GameFacade.getInstance().registerMediator(new HumanMediator(notification.getBody()["humanName"]));
+			GameFacade.getInstance().registerProxy(new HumanService(notification.getBody()));
 			
 		}
 		

@@ -10,11 +10,13 @@ package game.common
 		public static const CMD_CREATE_MAP:String = "cmd_create_map";
 		public static const CMD_TAKE_WEAPON:String = "cmd_take_weapon";
 		public static const CMD_NEW_RANDOM_TARGET:String = "cmd_new_random_target";
+		public static const CMD_GET_PROTECTOR:String = "cmd_get_protector";
 		
 		
 		public static const ACTION_MOVE_HUMAN:String = "action_move_human";
 		public static const ACTION_CHANGE_ANGLE:String = "action_change_angle";
 		public static const ACTION_CHANGE_STATE:String = "action_change_state";
+
 		public static const ACTION_GOTO:String = "action_goto";
 		public static const ACTION_KILL:String = "action_kill";
 		
@@ -24,15 +26,26 @@ package game.common
 		public static const TYPE_HUMAN:String = "type_human";
 		public static const TYPE_WAYPOINT:String = "type_waypoint";
 		
-		public static const FRACTION_GUARD:String = "fraction_guard";
-		public static const FRACTION_CIVIL:String = "fraction_civil";
-		public static const FRACTION_REBEL:String = "fraction_rebel";
 		
 		public static const NEW_ITER:String = "new_iter";
 		
 		public static const CURRENT_LEVEL:int = 1;
 		public static const ACTION_TIME:int = 30;
 		public static const MAP_STEP:int = 20;
+		
+		public static var FRACTIONS_PACIFIC:Array = [SharedConst.FRACTION_CIVIL_POOR, SharedConst.FRACTION_CIVIL_RICH];
+		public static var FRACTIONS_ARMED:Array = [SharedConst.FRACTION_POLICE, SharedConst.FRACTION_REBEL];
+		
+		public static var FRACTION_AGRESSION_LIMIT:int = 50;
+		
+		public static var FRACTIONS_RELATIONS:Array =  [[100,40,40,100],
+														[40,100,80,30],
+														[40,80,100,0],
+														[100,30,0,100],]
+		public static const FRACTION_CIVIL_POOR:int = 0;
+		public static const FRACTION_CIVIL_RICH:int = 1;
+		public static const FRACTION_POLICE:int = 2;
+		public static const FRACTION_REBEL:int = 3;
 		
 		public static const isSound:Boolean = true;
 		

@@ -46,7 +46,7 @@ package game.common
 		public function startup(newStage:Stage):void 
 		{
 			mainStage = newStage;
-			sendNotification(CMD_STARTUP,mainStage);
+			sendNotification(CMD_STARTUP,null);
 		}
 		
 		
