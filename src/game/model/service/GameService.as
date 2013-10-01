@@ -37,6 +37,7 @@ package game.model.service
 		
 		private var movingObject:Object = new Object;
 		private var actionTimer:Timer = new Timer(SharedConst.ACTION_TIME);
+		private var keyHeroes:Array = [];
 		public static var iteration:Number = 0;
 		
 		private var humans:Array;
@@ -64,8 +65,15 @@ package game.model.service
 			humans = SharedLevels.getInstance().getHumans(SharedConst.CURRENT_LEVEL);
 			for each(var h:Object in humans)
 			{
+				
+				
 				sendNotification(SharedConst.CMD_CREATE_HUMAN, h);
+				if (h.hasOwnProperty("keyHero") && h["keyHero"] == 1)
+				{
+					keyHeroes.push(h["humanName"]);
+				}
 			}
+			trace(keyHeroes)
 		}
 		
 		private function createMap():void 
@@ -155,7 +163,6 @@ package game.model.service
 			for each (var h:Object in humans)
 			{
 				var currentHuman:IHuman = getHuman(h["humanName"]);
-				//var currentHuman:IHuman = humans[i] as IHuman;
 				
 				if (currentHuman.getName() != data.name && currentHuman.getFraction()==protectorFraction)
 				{
@@ -169,13 +176,21 @@ package game.model.service
 					break;
 				}
 			}
-			//trace("getNearestProtector result: ", protector);
 			return protector;
-			/*if (protector != null)
+		}
+		
+		public function humanDone(hName:String):void 
+		{
+			if (keyHeroes.indexOf(hName) > -1)
 			{
-				
-				getHuman(data.name).runToProtector(getHuman(currentHuman.getName()));
-			}*/
+				keyHeroes.splice(keyHeroes.indexOf(hName), 1)
+				if (keyHeroes.length == 0)
+				{
+					trace("level cleared");
+					actionTimer.stop();
+					GameFacade.getInstance().mainStage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPush);
+				}
+			}
 		}
 		
 		

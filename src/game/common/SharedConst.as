@@ -10,7 +10,7 @@ package game.common
 		public static const CMD_CREATE_MAP:String = "cmd_create_map";
 		public static const CMD_TAKE_WEAPON:String = "cmd_take_weapon";
 		public static const CMD_NEW_RANDOM_TARGET:String = "cmd_new_random_target";
-		public static const CMD_GET_PROTECTOR:String = "cmd_get_protector";
+		public static const CMD_HUMAN_DONE:String = "cmd_human_done";
 		
 		
 		public static const ACTION_MOVE_HUMAN:String = "action_move_human";

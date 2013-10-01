@@ -21,7 +21,6 @@ package game.common.interfaces
 		function checkNoise(obj:Object):void;
 		function getFraction():int;
 		function getNextTargetFromPool():void;
-		function runToProtector(target:IHuman):void;
 		
 		/*function getAgressive():Number;
 		function setAgressive(level:Number):void;

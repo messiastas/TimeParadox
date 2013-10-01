@@ -41,6 +41,7 @@ package game.common
 			registerCommand(SharedConst.CMD_CREATE_MAP, createMapCommand);
 			registerCommand(SharedConst.CMD_TAKE_WEAPON, takeWeaponCommand);
 			registerCommand(SharedConst.CMD_NEW_RANDOM_TARGET, newRandomTargetCommand);
+			registerCommand(SharedConst.CMD_HUMAN_DONE, humanDoneCommand);
 		}
 		
 		public function startup(newStage:Stage):void 
