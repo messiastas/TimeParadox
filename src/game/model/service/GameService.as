@@ -167,13 +167,13 @@ package game.model.service
 				if (currentHuman.getName() != data.name && currentHuman.getFraction()==protectorFraction)
 				{
 					var newDistance:Number = Utils.calculateDistance(data.point, currentHuman.getCurrentPoint())
-					if (protector == null || (newDistance < currentDistance))
+					if (protector == null || ((newDistance < currentDistance) && (currentHuman.getHealth()>protector.getHealth())))
 					{
 						protector = currentHuman;
 						currentDistance = newDistance;
 					}
 					
-					break;
+					//break;
 				}
 			}
 			return protector;
