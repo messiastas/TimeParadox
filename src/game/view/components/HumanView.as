@@ -44,13 +44,15 @@ package game.view.components
 			human.removeEventListener(MouseEvent.MOUSE_OVER, onOverHuman);
 			human.addEventListener(MouseEvent.MOUSE_OUT, onOutHuman);
 			//var currentHuman:IHuman = GameFacade.getInstance().retrieveProxy(humanName) as IHuman;
-			human.addChild(infoPanel);
+			infoPanel.x = human.x;
+			infoPanel.y = human.y - 10;
+			GameFacade.getInstance().mainStage.addChild(infoPanel);
 			//trace(currentHuman.getName(),currentHuman.getFraction(), currentHuman.getHealth(), currentHuman.getWeapon())
 		}
 		
 		private function onOutHuman(e:MouseEvent):void 
 		{
-			human.removeChild(infoPanel);
+			GameFacade.getInstance().mainStage.removeChild(infoPanel);
 			human.addEventListener(MouseEvent.MOUSE_OVER, onOverHuman);
 			human.removeEventListener(MouseEvent.MOUSE_OUT, onOutHuman);
 		}

@@ -46,6 +46,7 @@ package game.model.service
 		private var needToStop:Boolean = false;
 		
 		private var cyclingTarget:Boolean = false;
+		private var waitIterations:int = 0;
 		
 		
 		
@@ -107,6 +108,16 @@ package game.model.service
 					
 					
 					
+				} else 
+				{
+					if (waitIterations > 0)
+					{
+						waitIterations--;
+					} else 
+					{
+						removeTargetFromPool();
+						trace(humanName,"end waiting")
+					}
 				}
 			}
 		}
@@ -134,7 +145,7 @@ package game.model.service
 						if ((currentTarget as IHuman).getHealth() > 0)
 						{
 							
-							changeAngle(calculateAngleToPoint(currentTarget.getCurrentPoint()));
+							//changeAngle(calculateAngleToPoint(currentTarget.getCurrentPoint()));
 							currentWeapon.shot(this, currentTarget as IHuman);
 						} else
 						{
@@ -240,6 +251,15 @@ package game.model.service
 						else 
 							cyclingTarget = false;
 						newTarget(targ.waypoint as IWorldObject, targ.targetAction);
+						//trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
+						break;
+					case SharedConst.TYPE_WAITING:
+						//trace("TYPE_WAYPOINT", targ.waypoint)
+						if (targ.isCycling)
+							cyclingTarget = true;
+						else 
+							cyclingTarget = false;
+						waitIterations = int(int(targ.targetAction) * 1000 / SharedConst.ACTION_TIME);
 						//trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
 						break;
 				}

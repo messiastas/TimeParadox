@@ -38,10 +38,12 @@ package game.common
         {
 			registerCommand(CMD_STARTUP, StartupCommand);
 			registerCommand(SharedConst.CMD_CREATE_HUMAN, createHumanCommand);
+			registerCommand(SharedConst.CMD_CREATE_PLAYER, createPlayerCommand);
 			registerCommand(SharedConst.CMD_CREATE_MAP, createMapCommand);
 			registerCommand(SharedConst.CMD_TAKE_WEAPON, takeWeaponCommand);
 			registerCommand(SharedConst.CMD_NEW_RANDOM_TARGET, newRandomTargetCommand);
 			registerCommand(SharedConst.CMD_HUMAN_DONE, humanDoneCommand);
+			registerCommand(SharedConst.CMD_CHECK_NOISE, checkNoiseCommand);
 		}
 		
 		public function startup(newStage:Stage):void 

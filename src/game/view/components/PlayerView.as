@@ -22,30 +22,28 @@ package game.view.components
 		private var body:MovieClip;
 		private var playerType:String = "realPlayer";
 		
-		public function PlayerView(pType:String = "realPlayer") 
+		public function PlayerView() 
 		{
-			playerType = pType;
-			trace(playerType);
 			init();
 		}
 		
 		public function init():void {
 			
-			GameFacade.getInstance().mainStage.addChild(player);
+			FearlessFacade.getInstance().mainStage.addChild(player);
 			
 			switch(playerType)
 			{
 				case SharedConst.REAL_PLAYER:
 					body = new RealPlayer();
-					GameFacade.getInstance().gameParameters.realPlayerPoint = new Point(GameFacade.getInstance().mainStage.stageWidth / 2 + GameFacade.getInstance().mainStage.stageWidth / 4, GameFacade.getInstance().mainStage.stageHeight - 50);
-					player.x = GameFacade.getInstance().gameParameters.realPlayerPoint.x;
-					player.y = GameFacade.getInstance().gameParameters.realPlayerPoint.y;
+					FearlessFacade.getInstance().fearlessParameters.realPlayerPoint = new Point(FearlessFacade.getInstance().mainStage.stageWidth / 2 + FearlessFacade.getInstance().mainStage.stageWidth / 4, FearlessFacade.getInstance().mainStage.stageHeight - 50);
+					player.x = FearlessFacade.getInstance().fearlessParameters.realPlayerPoint.x;
+					player.y = FearlessFacade.getInstance().fearlessParameters.realPlayerPoint.y;
 					break;
 				case SharedConst.EMOTIONAL_PLAYER:
 					body = new EmotionalPlayer();
-					GameFacade.getInstance().gameParameters.emotionalPlayerPoint = new Point(GameFacade.getInstance().mainStage.stageWidth / 4, GameFacade.getInstance().mainStage.stageHeight - 50);
-					player.x = GameFacade.getInstance().gameParameters.emotionalPlayerPoint.x;
-					player.y = GameFacade.getInstance().gameParameters.emotionalPlayerPoint.y;
+					FearlessFacade.getInstance().fearlessParameters.emotionalPlayerPoint = new Point(FearlessFacade.getInstance().mainStage.stageWidth / 4, FearlessFacade.getInstance().mainStage.stageHeight - 50);
+					player.x = FearlessFacade.getInstance().fearlessParameters.emotionalPlayerPoint.x;
+					player.y = FearlessFacade.getInstance().fearlessParameters.emotionalPlayerPoint.y;
 					break;
 			}
 			player.addChild(body);

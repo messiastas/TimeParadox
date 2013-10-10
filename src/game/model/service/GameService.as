@@ -13,6 +13,7 @@ package game.model.service
 	 import flash.utils.Timer;
 	 import game.common.interfaces.IHuman;
 	  import game.common.interfaces.IGameService;
+	 import game.common.interfaces.IPlayer;
 	 import game.common.interfaces.IWorldObject;
 	 import game.model.entity.GameParameters;
 	import game.common.GameFacade;
@@ -35,12 +36,15 @@ package game.model.service
 		
 		private var currentStep:int = 0;
 		
-		private var movingObject:Object = new Object;
+		//private var movingObject:Object = new Object;
 		private var actionTimer:Timer = new Timer(SharedConst.ACTION_TIME);
 		private var keyHeroes:Array = [];
 		public static var iteration:Number = 0;
 		
 		private var humans:Array;
+		private var playerData:Object;
+		private var movingObject:Object = { up:0, down:0, left:0, right:0 };
+		private var isPlayerMove:Boolean = false;
 		
 		public function GameService(pname:String,data:Object = null ):void 
 		{
@@ -56,6 +60,7 @@ package game.model.service
 			createMap();
 			createHumans();
 			setStartTargets();
+			setPlayer();
 			startLevel();
 			
 		}
@@ -96,6 +101,12 @@ package game.model.service
 			}
 		}
 		
+		private function setPlayer():void 
+		{
+			playerData = SharedLevels.getInstance().getPlayerData(SharedConst.CURRENT_LEVEL);
+			sendNotification(SharedConst.CMD_CREATE_PLAYER, playerData);
+		}
+		
 		public function setRandomTarget(forwho:IHuman):void 
 		{
 			for each(var h:Object in humans)
@@ -121,17 +132,119 @@ package game.model.service
 		{
 			actionTimer.start();
 			GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPush);
+			GameFacade.getInstance().mainStage.addEventListener(KeyboardEvent.KEY_UP,onKeyUnpressed);
 		}
 		
 		private function onKeyPush(e:KeyboardEvent):void 
 		{
-			if (actionTimer.running)
+			switch(e.keyCode)
 			{
-				trace(System.privateMemory, System.totalMemory, System.processCPUUsage);
-				actionTimer.stop();
+				case 32:
+					if (actionTimer.running)
+					{
+						trace(System.privateMemory, System.totalMemory, System.processCPUUsage);
+						actionTimer.stop();
+					}
+					else 
+						actionTimer.start();
+					break;
+					
+				case 38:
+					//Up
+					movingObject["up"] = 1;
+					isPlayerMove = true;
+					break;
+				case 40:
+					//Down
+					movingObject["down"] = 1;
+					isPlayerMove = true;
+					break;
+				case 37:
+					//Left
+					movingObject["left"] = 1;
+					isPlayerMove = true;
+					break;
+				case 39:
+					//Right
+					movingObject["right"] = 1;
+					isPlayerMove = true;
+					break;
+				case 87:
+					//Up
+					movingObject["up"] = 1;
+					isPlayerMove = true;
+					break;
+				case 83:
+					//Down
+					movingObject["down"] = 1;
+					isPlayerMove = true;
+					break;
+				case 65:
+					//Left
+					movingObject["left"] = 1;
+					isPlayerMove = true;
+					break;
+				case 68:
+					//Right
+					movingObject["right"] = 1;
+					isPlayerMove = true;
+					break;
 			}
-			else 
-				actionTimer.start();
+		}
+		
+		private function onKeyUnpressed(e:KeyboardEvent):void 
+		{
+			switch(e.keyCode)
+			{
+				case 38:
+					//Up
+					movingObject["up"] = 0;
+					checkMoveEnd();
+					break;
+				case 40:
+					//Down
+					movingObject["down"] = 0;
+					checkMoveEnd();
+					break;
+				case 37:
+					//Left
+					movingObject["left"] = 0;
+					checkMoveEnd();
+					break;
+				case 39:
+					//Right
+					movingObject["right"] = 0;
+					checkMoveEnd();
+					break;
+				case 87:
+					//Up
+					movingObject["up"] = 0;
+					checkMoveEnd();
+					break;
+				case 83:
+					//Down
+					movingObject["down"] = 0;
+					checkMoveEnd();
+					break;
+				case 65:
+					//Left
+					movingObject["left"] = 0;
+					checkMoveEnd();
+					break;
+				case 68:
+					//Right
+					movingObject["right"] = 0;
+					checkMoveEnd();
+					break;
+				
+			}
+			
+		}
+		
+		private function checkMoveEnd():void
+		{
+			if (movingObject["up"] + movingObject["down"] + movingObject["left"] + movingObject["right"] == 0)
+				isPlayerMove = false;
 		}
 		
 		private function onActionTimer(e:TimerEvent):void 
@@ -139,6 +252,10 @@ package game.model.service
 			iteration++;
 			GameFacade.getInstance().iteration = iteration;
 			//sendNotification(SharedConst.NEW_ITER, { "iteration":iteration } );
+			if (isPlayerMove)
+			{
+				(getHuman(SharedConst.PLAYER) as IPlayer).makeMove(movingObject);
+			}
 			for each(var h:Object in humans)
 			{
 					getHuman(h["humanName"]).makeStep();

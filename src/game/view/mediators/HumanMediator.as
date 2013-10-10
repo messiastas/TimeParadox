@@ -61,8 +61,8 @@ package game.view.mediators
 					break;
 				case SharedConst.NOISE_SHOT:
 					try {
-						
-						(GameFacade.getInstance().retrieveProxy(humanName) as IHuman).checkNoise(note.getBody());
+						sendNotification(SharedConst.CMD_CHECK_NOISE, {hName:humanName, body:note.getBody() } );
+						//(GameFacade.getInstance().retrieveProxy(humanName) as IHuman).checkNoise(note.getBody());
 					} catch (er:Error) {
 						//trace("no more ", humanName)
 					}

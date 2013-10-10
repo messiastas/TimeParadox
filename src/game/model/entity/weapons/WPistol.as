@@ -11,7 +11,7 @@ package game.model.entity.weapons
 		{
 			power = 22;
 			distance = 90;
-			noise = 200;
+			noise = 120;
 			maxBullets = 9;
 			currentBullets = 9;
 			reloadTime = 30;

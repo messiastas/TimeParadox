@@ -1,13 +1,13 @@
 package game.view.mediators 
 {
-	import game.model.entity.GameParameters;
-	import game.view.components.PlayerView;
+	import fearless.model.entity.FearlessParameters;
+	import fearless.view.components.PlayerView;
 	import flash.geom.Point;
 	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.patterns.mediator.Mediator;
-	import game.common.GameFacade;
-	import game.view.components.MenuView
-	import game.common.SharedConst;
+	import fearless.common.FearlessFacade;
+	import fearless.view.components.MenuView
+	import fearless.common.SharedConst;
 	import org.puremvc.as3.interfaces.INotification;
 	
 	/**
@@ -18,14 +18,14 @@ package game.view.mediators
 	{
 		public static const NAME:String = 'PlayerMediator'; 
 		private var playerType:String = "realPlayer";
-		private var fParams:GameParameters;
+		private var fParams:FearlessParameters;
 		
 		
 		public function PlayerMediator(type:String = "realPlayer") 
 		{
 			playerType = type;
 			super( NAME + playerType, new PlayerView(playerType) );
-			fParams = GameFacade.getInstance().gameParameters;
+			fParams = FearlessFacade.getInstance().fearlessParameters;
 		}
 		
 		override public function listNotificationInterests() : Array 
