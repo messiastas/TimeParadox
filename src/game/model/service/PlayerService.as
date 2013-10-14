@@ -123,6 +123,21 @@ package game.model.service
 			
 			sendNotification(SharedConst.ACTION_CHANGE_ANGLE + humanName, {"newAngle":currentAngle});
 		}
+		
+		public function doSomething(command:String):void 
+		{
+			switch (command)
+			{
+				case SharedConst.ACTION_SAY_SOMETHING:
+					//TODO normal notification
+					trace("PLAYER IS SPEAKING");
+					sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
+					sendNotification(SharedConst.NOISE, {"type":SharedConst.NOISE_SPEECH, "point":getCurrentPoint(), "distance": SharedConst.SPEECH_DISTANCE, "speaker":getName()});
+					break;
+			}
+		}
+		
+		
 		public function makeStep():void
 		{
 			

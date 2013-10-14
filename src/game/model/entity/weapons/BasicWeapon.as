@@ -64,7 +64,7 @@ package game.model.entity.weapons
 				trace(shooter.getName()+" is shooting with " + getName() + " to " + victim.getName());
 				victim.shootedBy(this);
 				reloadTimer.start();
-				sendNotification(SharedConst.NOISE_SHOT, { "point":shooter.getCurrentPoint(), "distance": noise, "shooter":shooter.getName()});
+				sendNotification(SharedConst.NOISE, {"type":SharedConst.NOISE_SHOT, "point":shooter.getCurrentPoint(), "distance": noise, "shooter":shooter.getName()});
 			}
 			
 			

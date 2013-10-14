@@ -7,7 +7,8 @@ package game.common.interfaces
 	import flash.geom.Point;
 	public interface IPlayer 
 	{
-		function makeMove(movingObject:Object):void
+		function makeMove(movingObject:Object):void;
+		function doSomething(command:String):void;
 		
 		
 	}

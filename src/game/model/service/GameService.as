@@ -236,6 +236,10 @@ package game.model.service
 					movingObject["right"] = 0;
 					checkMoveEnd();
 					break;
+				case 69:
+					//Speech
+					(getHuman(SharedConst.PLAYER)as IPlayer).doSomething(SharedConst.ACTION_SAY_SOMETHING);
+					break;
 				
 			}
 			
@@ -308,6 +312,7 @@ package game.model.service
 					GameFacade.getInstance().mainStage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPush);
 				}
 			}
+			//humans.splice(humans.indexOf(hName), 1)
 		}
 		
 		

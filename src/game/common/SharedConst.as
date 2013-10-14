@@ -19,11 +19,14 @@ package game.common
 		public static const ACTION_MOVE_HUMAN:String = "action_move_human";
 		public static const ACTION_CHANGE_ANGLE:String = "action_change_angle";
 		public static const ACTION_CHANGE_STATE:String = "action_change_state";
+		public static const ACTION_SAY_SOMETHING:String = "action_say_something";
 
 		public static const ACTION_GOTO:String = "action_goto";
 		public static const ACTION_KILL:String = "action_kill";
 		
+		public static const NOISE:String = "noise";
 		public static const NOISE_SHOT:String = "noise_shot";
+		public static const NOISE_SPEECH:String = "noise_speech";
 		
 		
 		public static const TYPE_HUMAN:String = "type_human";
@@ -36,6 +39,8 @@ package game.common
 		public static const CURRENT_LEVEL:int = 1;
 		public static const ACTION_TIME:int = 30;
 		public static const MAP_STEP:int = 20;
+		public static const SPEECH_TIME:Number = 2;
+		public static const SPEECH_DISTANCE:Number = 200;
 		
 		public static var FRACTIONS_PACIFIC:Array = [SharedConst.FRACTION_CIVIL_POOR, SharedConst.FRACTION_CIVIL_RICH];
 		public static var FRACTIONS_ARMED:Array = [SharedConst.FRACTION_POLICE, SharedConst.FRACTION_REBEL];

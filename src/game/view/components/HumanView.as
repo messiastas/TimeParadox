@@ -2,11 +2,13 @@ package game.view.components
 {
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.events.EventDispatcher;
+	import flash.utils.Timer;
 	import game.common.GameFacade
 	import game.common.interfaces.IHuman;
 	import game.common.SharedConst;
@@ -21,6 +23,9 @@ package game.view.components
 		private var body:MovieClip;
 		private var humanName:String = "";
 		private var infoPanel:InfoPanel = new InfoPanel;
+		private var isPanel:Boolean = false;
+		private var messageTimer:Timer = new Timer(3000);
+		private var messageClip:SpeechPanel = new SpeechPanel;
 		
 		
 		public function HumanView(hName:String) 
@@ -37,6 +42,7 @@ package game.view.components
 			human.addChild(body);
 			human.addEventListener(MouseEvent.MOUSE_OVER, onOverHuman);
 			infoPanel.nameText.text = humanName;
+			messageClip.visible = false;
 		}
 		
 		private function onOverHuman(e:MouseEvent):void 
@@ -47,6 +53,7 @@ package game.view.components
 			infoPanel.x = human.x;
 			infoPanel.y = human.y - 10;
 			GameFacade.getInstance().mainStage.addChild(infoPanel);
+			isPanel = true;
 			//trace(currentHuman.getName(),currentHuman.getFraction(), currentHuman.getHealth(), currentHuman.getWeapon())
 		}
 		
@@ -61,6 +68,16 @@ package game.view.components
 		{
 			human.x = newX;
 			human.y = newY;
+			if (isPanel)
+			{
+				infoPanel.x = human.x;
+				infoPanel.y = human.y - 10;
+			}
+			if (messageClip.visible)
+			{
+				messageClip.x = human.x;
+				messageClip.y = human.y - 10;
+			}
 		}
 		
 		public function setAngle( angle:Number):void 
@@ -89,6 +106,27 @@ package game.view.components
 					break;
 			}
 			body.gotoAndStop(data.fraction+1)
+		}
+		
+		public function saySomething(message:String, dTime:Number=2):void 
+		{
+			trace("SAY SOMETHING",message);
+			messageClip.x = human.x;
+			messageClip.y = human.y - 10;
+			GameFacade.getInstance().mainStage.addChild(messageClip);
+			messageClip.speechText.text = message;
+			messageTimer.delay = dTime*1000;
+			messageTimer.addEventListener(TimerEvent.TIMER, hideMessage);
+			messageTimer.start();
+			messageClip.visible = true;
+		}
+		
+		private function hideMessage(E:TimerEvent):void 
+		{
+			messageTimer.removeEventListener(TimerEvent.TIMER, hideMessage);
+			messageTimer.reset();
+			GameFacade.getInstance().mainStage.removeChild(messageClip);
+			messageClip.visible = false;
 		}
 		
 	}

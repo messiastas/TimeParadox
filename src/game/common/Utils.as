@@ -15,11 +15,7 @@ package game.common
 				trace( objName,"[", d, "] = ", obj[d]);
 				if (obj[d] is Object)
 					recursiveTrace(obj[d], String(objName + "[" + d + "]"));
-				if (obj[d] == null)
-				{
-					trace("deleting ", objName, "[", d, "]");
-					delete obj[d];
-				}
+				
 			}
 		}
 		

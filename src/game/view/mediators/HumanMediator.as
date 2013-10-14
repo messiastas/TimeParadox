@@ -28,7 +28,8 @@ package game.view.mediators
 				SharedConst.ACTION_MOVE_HUMAN + humanName,
 				SharedConst.ACTION_CHANGE_ANGLE + humanName,
 				SharedConst.ACTION_CHANGE_STATE + humanName,
-				SharedConst.NOISE_SHOT,
+				SharedConst.NOISE,
+				SharedConst.ACTION_SAY_SOMETHING + humanName,
 			];
 			super( NAME + humanName, new HumanView(humanName) );
 		}
@@ -53,13 +54,13 @@ package game.view.mediators
 				case SharedConst.ACTION_CHANGE_STATE + humanName:
 					if (note.getBody()["newState"] == "die")
 					{
-						interests.splice(interests.indexOf(SharedConst.NOISE_SHOT), 1);
+						interests.splice(interests.indexOf(SharedConst.NOISE), 1);
 						trace("*********************** removing interests for ", humanName);
 					}
 					human.setState(note.getBody())
 					
 					break;
-				case SharedConst.NOISE_SHOT:
+				case SharedConst.NOISE:
 					try {
 						sendNotification(SharedConst.CMD_CHECK_NOISE, {hName:humanName, body:note.getBody() } );
 						//(GameFacade.getInstance().retrieveProxy(humanName) as IHuman).checkNoise(note.getBody());
@@ -67,7 +68,10 @@ package game.view.mediators
 						//trace("no more ", humanName)
 					}
 					break;
-				
+				case SharedConst.ACTION_SAY_SOMETHING + humanName:
+					
+					human.saySomething(note.getBody().message,note.getBody().time)
+					break;
 			}
 		}
 		

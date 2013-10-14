@@ -110,6 +110,7 @@ package game.model.service
 					
 				} else 
 				{
+					trace(getName(),waitIterations);
 					if (waitIterations > 0)
 					{
 						waitIterations--;
@@ -129,9 +130,9 @@ package game.model.service
 				case SharedConst.ACTION_GOTO:
 					if (Utils.calculateDistance(currentTarget.getCurrentPoint(), currentPoint) < SharedConst.MAP_STEP*2)
 					{
-						removeTargetFromPool();
-						trace(humanName,"arrived")
 						
+						trace(humanName,"arrived")
+						removeTargetFromPool();
 						return true;
 					}
 					else
@@ -254,12 +255,15 @@ package game.model.service
 						//trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
 						break;
 					case SharedConst.TYPE_WAITING:
-						//trace("TYPE_WAYPOINT", targ.waypoint)
+						trace("TYPE_WAITING FOR", getName())
+						//trace(targ.targetAction,targ.targetType);
 						if (targ.isCycling)
 							cyclingTarget = true;
 						else 
 							cyclingTarget = false;
 						waitIterations = int(int(targ.targetAction) * 1000 / SharedConst.ACTION_TIME);
+						wayPoint = null;
+				currentTarget = null;
 						//trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
 						break;
 				}
@@ -291,30 +295,40 @@ package game.model.service
 		{
 			if (Utils.calculateDistance(currentPoint, obj["point"]) < obj["distance"])
 			{
-				//trace(humanName, "has listen the", obj["point"], "shot");
-				trace(humanName, "has listen the", obj["point"])
-				if (SharedConst.FRACTIONS_PACIFIC.indexOf(getFraction())>-1)
+				switch(obj["type"])
 				{
-					//trace(humanName, "has listen the", obj["point"])
+					case SharedConst.NOISE_SHOT:
 					
-					var protector:IHuman = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getNearestProtector( { name:getName(), fraction:getFraction(), point:getCurrentPoint() } );
-					
-					if (currentTarget.getName() != protector.getName())
-					{
-						trace(getName(), "must run to", protector.getName());
-						var targ:DataTarget = new DataTarget({targetName:protector.getName(), targetType:SharedConst.TYPE_HUMAN, targetAction:SharedConst.ACTION_GOTO});
+						//trace(humanName, "has listen the", obj["point"], "shot");
+						trace(humanName, "has listen the", obj["point"])
+						if (SharedConst.FRACTIONS_PACIFIC.indexOf(getFraction())>-1)
+						{
+							var protector:IHuman = (GameFacade.getInstance().retrieveProxy(SharedConst.GAME_SERVICE) as IGameService).getNearestProtector( { name:getName(), fraction:getFraction(), point:getCurrentPoint() } );
+							
+							if (currentTarget.getName() != protector.getName())
+							{
+								trace(getName(), "must run to", protector.getName());
+								var targ:DataTarget = new DataTarget({targetName:protector.getName(), targetType:SharedConst.TYPE_HUMAN, targetAction:SharedConst.ACTION_GOTO});
+								pushTargetintoPool(targ);
+							}
+						} else if (SharedConst.FRACTIONS_ARMED.indexOf(getFraction())>-1 && getName() != obj["shooter"])
+						{
+							//trace(getName(), "is ready to fight with",obj["shooter"])
+							var shooter:IHuman = GameFacade.getInstance().retrieveProxy(obj["shooter"]) as IHuman;
+							if (Utils.getFractionRelations(getFraction(), shooter.getFraction()) < SharedConst.FRACTION_AGRESSION_LIMIT && (currentTarget==null || (currentTarget.getName() != shooter.getName() )) )
+							{
+								trace("For ", getName(), "new target is ", shooter.getName());
+								targ = new DataTarget({targetName:shooter.getName(), targetType:SharedConst.TYPE_HUMAN, targetAction:SharedConst.ACTION_KILL});
+								pushTargetintoPool(targ);
+							}
+						}
+						break;
+					case SharedConst.NOISE_SPEECH:
+						trace(getName(), "is listening for ", obj["speaker"]);
+						targ = new DataTarget( { targetType:SharedConst.TYPE_WAITING, targetName:"some", targetAction:"2", tPoint:new EmptyWorldObject("waypoint2", new Point(0, 0)), isCycling:false } );
+						//sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
 						pushTargetintoPool(targ);
-					}
-				} else if (SharedConst.FRACTIONS_ARMED.indexOf(getFraction())>-1 && getName() != obj["shooter"])
-				{
-					trace(getName(), "is ready to fight with",obj["shooter"])
-					var shooter:IHuman = GameFacade.getInstance().retrieveProxy(obj["shooter"]) as IHuman;
-					if (Utils.getFractionRelations(getFraction(), shooter.getFraction()) < SharedConst.FRACTION_AGRESSION_LIMIT && (currentTarget==null || (currentTarget.getName() != shooter.getName() )) )
-					{
-						trace("For ", getName(), "new target is ", shooter.getName());
-						targ = new DataTarget({targetName:shooter.getName(), targetType:SharedConst.TYPE_HUMAN, targetAction:SharedConst.ACTION_KILL});
-						pushTargetintoPool(targ);
-					}
+						break;
 				}
 			}
 		}
