@@ -133,6 +133,12 @@ package game.model.service
 						
 						trace(humanName,"arrived")
 						removeTargetFromPool();
+						if (currentTarget is IHuman)
+						{
+							
+							sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
+							sendNotification(SharedConst.NOISE, {"type":SharedConst.NOISE_SPEECH, "point":getCurrentPoint(), "distance": SharedConst.SPEECH_DISTANCE, "speaker":getName()});
+						}
 						return true;
 					}
 					else
@@ -169,6 +175,7 @@ package game.model.service
 			{
 				wayPoint = null;
 				currentTarget = null;
+				targetAction = null;
 				poolOfTargets.shift();
 				getNextTargetFromPool();
 			} else 
@@ -176,6 +183,7 @@ package game.model.service
 				poolOfTargets.push(poolOfTargets[0]);
 				wayPoint = null;
 				currentTarget = null;
+				targetAction = null;
 				poolOfTargets.shift();
 				getNextTargetFromPool();
 			}
@@ -263,7 +271,8 @@ package game.model.service
 							cyclingTarget = false;
 						waitIterations = int(int(targ.targetAction) * 1000 / SharedConst.ACTION_TIME);
 						wayPoint = null;
-				currentTarget = null;
+						currentTarget = null;
+						targetAction = null;
 						//trace("TYPE_WAYPOINT", targ.waypoint.getCurrentPoint())
 						break;
 				}
@@ -324,10 +333,14 @@ package game.model.service
 						}
 						break;
 					case SharedConst.NOISE_SPEECH:
-						trace(getName(), "is listening for ", obj["speaker"]);
-						targ = new DataTarget( { targetType:SharedConst.TYPE_WAITING, targetName:"some", targetAction:"2", tPoint:new EmptyWorldObject("waypoint2", new Point(0, 0)), isCycling:false } );
-						//sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
-						pushTargetintoPool(targ);
+						if ((targetAction != SharedConst.ACTION_KILL || Utils.calculateDistance(getCurrentPoint(),currentTarget.getCurrentPoint())>getWeapon().getDistance()*2))
+						{//getName() != obj["speaker"] && 
+							
+							trace(getName(), "is listening for ", obj["speaker"]);
+							targ = new DataTarget( { targetType:SharedConst.TYPE_WAITING, targetName:"some", targetAction:"2", tPoint:new EmptyWorldObject("waypoint2", new Point(0, 0)), isCycling:false } );
+							//sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
+							pushTargetintoPool(targ);
+						}
 						break;
 				}
 			}
