@@ -132,7 +132,7 @@ package game.model.service
 					//TODO normal notification
 					trace("PLAYER IS SPEAKING");
 					sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
-					sendNotification(SharedConst.NOISE, {"type":SharedConst.NOISE_SPEECH, "point":getCurrentPoint(), "distance": SharedConst.SPEECH_DISTANCE, "speaker":getName()});
+					sendNotification(SharedConst.NOISE, {"type":SharedConst.NOISE_SPEECH, "point":getCurrentPoint(), "distance": SharedConst.SPEECH_DISTANCE, "speaker":getName(),"message":new DataInformation()});
 					break;
 			}
 		}

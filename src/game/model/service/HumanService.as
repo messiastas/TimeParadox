@@ -137,7 +137,7 @@ package game.model.service
 						{
 							
 							sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
-							sendNotification(SharedConst.NOISE, {"type":SharedConst.NOISE_SPEECH, "point":getCurrentPoint(), "distance": SharedConst.SPEECH_DISTANCE, "speaker":getName()});
+							sendNotification(SharedConst.NOISE, {"type":SharedConst.NOISE_SPEECH, "point":getCurrentPoint(), "distance": SharedConst.SPEECH_DISTANCE, "speaker":getName(),"message":new DataInformation()});
 						}
 						return true;
 					}
@@ -336,7 +336,7 @@ package game.model.service
 						if ((targetAction != SharedConst.ACTION_KILL || Utils.calculateDistance(getCurrentPoint(),currentTarget.getCurrentPoint())>getWeapon().getDistance()*2))
 						{//getName() != obj["speaker"] && 
 							
-							trace(getName(), "is listening for ", obj["speaker"]);
+							trace(getName(), "is listening for ", obj["speaker"],"WITH MESSAGE",(obj["message"] as DataInformation).infoMessage);
 							targ = new DataTarget( { targetType:SharedConst.TYPE_WAITING, targetName:"some", targetAction:"2", tPoint:new EmptyWorldObject("waypoint2", new Point(0, 0)), isCycling:false } );
 							//sendNotification(SharedConst.ACTION_SAY_SOMETHING+getName(), { message:"someMEssage", time:SharedConst.SPEECH_TIME } );
 							pushTargetintoPool(targ);

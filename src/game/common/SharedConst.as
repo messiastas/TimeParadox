@@ -24,6 +24,10 @@ package game.common
 		public static const ACTION_GOTO:String = "action_goto";
 		public static const ACTION_KILL:String = "action_kill";
 		
+		public static const INFO_CHAT:String = "info_chat";
+		public static const INFO_ORDER:String = "info_order";
+		public static const INFO_QUEST:String = "info_quest";
+		
 		public static const NOISE:String = "noise";
 		public static const NOISE_SHOT:String = "noise_shot";
 		public static const NOISE_SPEECH:String = "noise_speech";
